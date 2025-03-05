@@ -112,27 +112,39 @@ def main():
     start_game()
     while True:
         print(possible_moves)
-        for sign in ['x', 'o']:
-            if check_if_winning(board, sign):
-                print(f'Player {sign.upper()} won!')
-                return
-        if not possible_moves:
+        if check_if_winning(board, 'x'):
+            print(f'Player X won!')
+            return
+        elif check_if_winning(board, 'o'):
+            print('Plater O won!')
+        elif not possible_moves:
             print('It is a draw!')
             return
         move = ask_for_input()
         board = update_board(move[0], move[1])
         print_board(board)
+        if check_if_winning(board, 'x'):
+            print('Player X won!')
+            return
+
+        if check_if_winning(board, 'o'):
+            print('Player O won!')
+            return
+
         computer_move = computer_marks()
-        if not computer_move and not any(check_if_winning(board, sign) for sign in ['x', 'o']):
-            print('It is a draw!')
-            break
-        elif not computer_move and any(check_if_winning(board, sign) for sign in ['x', 'o']):
-            continue
-        else:
-            print('Now it is the opponent\'s turn')
+        if computer_move:
+            print('Now it\'s the opponent\'s turn!')
             board = update_board(
                 computer_move[0], computer_move[1], computer=True)
             print_board(board)
+
+        if check_if_winning(board, 'o'):
+            print('Plater 0 won!')
+            return
+
+        elif not possible_moves:
+            print('It is a draw!')
+            return
 
 
 if __name__ == '__main__':
