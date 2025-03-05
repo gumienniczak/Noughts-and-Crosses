@@ -28,6 +28,13 @@ board_art = {'empty': "[ ]",
              'o': '[O]'}
 
 
+def start_game():
+    for row in board:
+        for value in row:
+            print(f'[{value}]', end=' ')
+        print()
+
+
 def print_board(board):
     for row in board:
         for value in row:
@@ -65,31 +72,27 @@ def ask_for_input():
             break
 
 
-def update_board(horizontal_i, vertical_i):
+def update_board(horizontal_i, vertical_i, computer=False):
     new_board = board
-    new_board[horizontal_i][vertical_i] = 'X'
+    if computer:
+        new_board[horizontal_i][vertical_i] = 'o'
+    else:
+        new_board[horizontal_i][vertical_i] = 'x'
     return new_board
 
 
-def check_if_winning(board):
-    winning = False
-    if board[0][0] == 'x' and board[0][1] == 'x' and board[0][2] == 'x':
-        winning = True
-    elif board[1][0] == 'x' and board[1][1] == 'x' and board[1][2] == 'x':
-        winning = True
-    elif board[2][0] == 'x' and board[2][1] == 'x' and board[2][2] == 'x':
-        winning = True
-    elif board[0][0] == 'x' and board[1][0] == 'x' and board[2][0] == 'x':
-        winning = True
-    elif board[0][1] == 'x' and board[1][1] == 'x' and board[2][1] == 'x':
-        winning = True
-    elif board[0][2] == 'x' and board[1][2] == 'x' and board[2][2] == 'x':
-        winning = True
-    elif board[0][0] == 'x' and board[1][1] == 'x' and board[2][2] == 'x':
-        winning = True
-    elif board[0][2] == 'x' and board[1][1] == 'x' and board[2][0] == 'x':
-        winning = True
-    return winning
+def check_if_winning(board, sign):
+    for row in board:
+        if row == [sign, sign, sign]:
+            return True
+    for col in range(3):
+        if board[0][col] == sign and board[1][col] == sign and board[2][col] == sign:
+            return True
+    if board[0][0] == sign and board[1][1] == sign and board[2][2] == sign:
+        return True
+    if board[0][2] == sign and board[1][1] == sign and board[2][0] == sign:
+        return True
+    return False
 
 
 def computer_marks():
@@ -103,12 +106,18 @@ def computer_marks():
 
 def main():
     global board
-    while possible_moves and check_if_winning(board) is False:
+    start_game()
+    while True:
+        for sign in ['x', 'o']:
+            if check_if_winning(board, sign):
+                print(f'Player {sign.upper()} won!')
+                return
         move = ask_for_input()
         board = update_board(move[0], move[1])
         print_board(board)
-        computer_move = ask_for_input()
-        board = update_board(computer_move[0], computer_move[1])
+        print('Now it is the opponent\'s turn')
+        computer_move = computer_marks()
+        board = update_board(computer_move[0], computer_move[1], computer=True)
         print_board(board)
 
 
