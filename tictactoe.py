@@ -4,6 +4,7 @@ board = [[1, 2, 3],
          [4, 5, 6],
          [7, 8, 9]]
 
+# As the game progresses, possible moves are decreasing, while used_moves are expanded
 possible_moves = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 used_moves = []
 
@@ -55,14 +56,19 @@ number_to_position_map = {1: (0, 0), 2: (0, 1), 3: (0, 2),
 def ask_for_input():
     while True:
         user_choice = input('Choose field you would like to mark: ')
-        chosen_number = int(user_choice)
+        if user_choice.lower() == 'exit':
+            return user_choice
+        try:
+            chosen_number = int(user_choice)
+        except ValueError:
+            print('No number given. Please try again. You can also type "exit" to quit. ')
+            continue
         if chosen_number in possible_moves and chosen_number not in used_moves:
             possible_moves.remove(int(user_choice))
             used_moves.append(chosen_number)
             hor_i = number_to_position_map[chosen_number][0]
             ver_i = number_to_position_map[chosen_number][1]
-
-            return hor_i, ver_i
+            return hor_i, ver_i, user_choice
         elif chosen_number in used_moves:
             print('This field has already been marked!')
             break
@@ -102,7 +108,7 @@ def computer_marks():
         used_moves.append(computer_move)
         hor_i = number_to_position_map[computer_move][0]
         ver_i = number_to_position_map[computer_move][1]
-        return hor_i, ver_i
+        return hor_i, ver_i,
     else:
         return None
 
@@ -116,11 +122,15 @@ def main():
             print(f'Player X won!')
             return
         elif check_if_winning(board, 'o'):
-            print('Plater O won!')
+            print('Player O won!')
         elif not possible_moves:
             print('It is a draw!')
             return
         move = ask_for_input()
+        if move == 'exit':
+            print('Quitting...')
+            return
+        print(f'Player X put an x on field {move[2]}.')
         board = update_board(move[0], move[1])
         print_board(board)
         if check_if_winning(board, 'x'):
