@@ -139,7 +139,7 @@ def main():
             print_board(board)
 
         if check_if_winning(board, 'o'):
-            print('Plater 0 won!')
+            print('Player 0 won!')
             return
 
         elif not possible_moves:
